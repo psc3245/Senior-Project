@@ -1,93 +1,193 @@
-# ug_hf_5
+# KittyCatQuant
 
+A full-stack stock trading platform with an AI-powered chatbot assistant. Users can manage portfolios, track watchlists, view real-time price data, read financial news, and interact with an AI assistant capable of looking up stocks, estimating trades, and executing them.
 
+---
 
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-* [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+## Project Structure
 
 ```
-cd existing_repo
-git remote add origin https://git.las.iastate.edu/SeniorDesignComS/2026spr/402c/ug_hf_5.git
-git branch -M main
-git push -uf origin main
+ug_hf_5/
+├── Frontend/
+│   └── kittycatquant/      # React frontend (Create React App)
+└── Backend/
+    └── StockTraderBackend/ # ASP.NET Core 9 backend
 ```
 
-## Integrate with your tools
+---
 
-* [Set up project integrations](https://git.las.iastate.edu/SeniorDesignComS/2026spr/402c/ug_hf_5/-/settings/integrations)
+## Prerequisites
 
-## Collaborate with your team
+Before running the project, make sure you have the following installed:
 
-* [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+- [Node.js](https://nodejs.org/) (v18 or later recommended)
+- [npm](https://www.npmjs.com/) (comes with Node.js)
+- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- A PostgreSQL database instance
 
-## Test and Deploy
+---
 
-Use the built-in continuous integration in GitLab.
+## Backend Setup
 
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+### 1. Configure `appsettings.json`
 
-***
+The backend's `appsettings.json` and `appsettings.Development.json` are gitignored and must be created manually. Navigate to the backend project directory:
 
-# Editing this README
+```
+Backend/StockTraderBackend/StockTraderBackend/
+```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+Create an `appsettings.json` (and optionally `appsettings.Development.json`) with the following structure:
 
-## Suggestions for a good README
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=<your-db-host>;Database=<your-db>;Username=<user>;Password=<password>"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}
+```
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+Replace the placeholders with your actual PostgreSQL connection details.
 
-## Name
-Choose a self-explaining name for your project.
+### 2. Restore dependencies
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+```bash
+cd Backend/StockTraderBackend
+dotnet restore
+```
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### 3. Apply database migrations (if applicable)
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+```bash
+cd Backend/StockTraderBackend/StockTraderBackend
+dotnet ef database update
+```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+### 4. Run the backend
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+```bash
+dotnet run --launch-profile http
+```
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+The API will be available at `http://0.0.0.0:8080` by default.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+### 5. Swagger UI
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+Once running, the API documentation is available at:
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+```
+http://localhost:8080/swagger
+```
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+### 6. Run backend tests
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+```bash
+cd Backend/StockTraderBackend
+dotnet test
+```
 
-## License
-For open source projects, say how it is licensed.
+---
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+## Frontend Setup
+
+### 1. Install dependencies
+
+```bash
+cd Frontend/kittycatquant
+npm install
+```
+
+### 2. Configure environment variables
+
+Create a `.env` file in `Frontend/kittycatquant/` (this file is gitignored):
+
+```env
+REACT_APP_API_BASE_URL=http://localhost:8080
+REACT_APP_SIGNALR_CHAT_URL=http://localhost:8080/chat
+```
+
+Adjust the URLs to match wherever your backend is running.
+
+### 3. Start the development server
+
+```bash
+npm start
+```
+
+The app will open at [http://localhost:3000](http://localhost:3000). The page reloads automatically on file changes.
+
+### 4. Run frontend tests
+
+```bash
+npm test
+```
+
+### 5. Build for production
+
+```bash
+npm run build
+```
+
+Output goes to the `build/` folder, optimized and minified for deployment.
+
+---
+
+## Running Both Together (Local Development)
+
+Open two terminal windows:
+
+**Terminal 1 — Backend:**
+```bash
+cd Backend/StockTraderBackend/StockTraderBackend
+dotnet run --launch-profile http
+```
+
+**Terminal 2 — Frontend:**
+```bash
+cd Frontend/kittycatquant
+npm start
+```
+
+Then visit [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## SignalR Chat Hub
+
+The AI chatbot connects via SignalR at `/chat`. See [`Backend/StockTraderBackend/StockTraderBackend/Chat/HowToUse.md`](Backend/StockTraderBackend/StockTraderBackend/Chat/HowToUse.md) for full hub documentation including available methods and event callbacks.
+
+Quick connection example:
+
+```javascript
+const connection = new signalR.HubConnectionBuilder()
+  .withUrl("http://localhost:8080/chat")
+  .build();
+
+await connection.start();
+connection.invoke("CreateChat", userId, "My Session");
+```
+
+---
+
+## Key Technologies
+
+| Layer    | Technology                          |
+|----------|-------------------------------------|
+| Frontend | React 19, React Router, Recharts, SignalR JS client, Axios |
+| Backend  | ASP.NET Core 9, Entity Framework Core, SignalR, PostgreSQL |
+| AI       | LLM tool dispatcher with multi-level tools (read, estimate, execute) |
+
+---
+
+## Notes
+
+- `appsettings.json` and `appsettings.Development.json` are excluded from source control. You must create them manually.
+- `.env` files for the frontend are also excluded from source control.
+- The backend CORS policy is currently set to allow all origins (`AllowAll`), suitable for local development.
