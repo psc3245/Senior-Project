@@ -266,13 +266,7 @@ npm start
 
 The app will open at [http://localhost:3000](http://localhost:3000). The page reloads automatically on file changes.
 
-### 4. Run frontend tests
-
-```bash
-npm test
-```
-
-### 5. Build for production
+### 4. Build for production
 
 ```bash
 npm run build
