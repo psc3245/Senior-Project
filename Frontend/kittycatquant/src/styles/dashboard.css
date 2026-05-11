@@ -1,0 +1,660 @@
+/* ---------- Layout ---------- */
+.dashShell{
+  width: 100%;
+  max-width: none;
+  margin: 0;
+
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.dashShell .sidebar{
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: 100vh;
+  overflow: hidden;
+  background: rgba(255,255,255,.03);
+  border-right: 1px solid rgba(255,255,255,.08);
+
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Main content */
+.dashShell .dashContent,
+.dashShell .main{
+  min-width: 0;
+  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 22px 28px 60px;
+  position: relative;
+  z-index: 2;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.dashShell .dashContent::-webkit-scrollbar,
+.dashShell .main::-webkit-scrollbar{
+  display: none;
+}
+
+.dashContent.noGutter{
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  min-height: calc(100vh - 66px);
+}
+
+/* ---------- Mobile sidebar controls ---------- */
+.mobileSidebarBtn{
+  display: none;
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.05);
+  color: rgba(231,238,252,1);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.mobileSidebarClose{
+  display: none;
+}
+
+.sidebarOverlay{
+  display: none;
+}
+
+/* ---------- Sidebar sections ---------- */
+.sidebarTop{
+  background: rgba(110,168,254,.20);
+  min-height: 86px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  border-top-right-radius: 24px;
+  border-bottom-right-radius: 24px;
+  overflow: hidden;
+  position: relative;
+}
+
+.sidebarTop .logo{
+  font-weight: 900;
+  letter-spacing: .2px;
+}
+
+.sideSearch{
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.sideSearch input{
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.16);
+  color: rgba(231,238,252,1);
+  outline: none;
+}
+
+.sideSearch input:focus{
+  border-color: rgba(110,168,254,.55);
+  box-shadow: 0 0 0 4px rgba(110,168,254,.12);
+}
+
+.sideNav{
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.sideItem{
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: rgba(231,238,252,.75);
+  cursor: pointer;
+  user-select: none;
+}
+
+.sideItem:hover{
+  background: rgba(255,255,255,.04);
+  color: rgba(231,238,252,.95);
+}
+
+.sideItem.active{
+  background: rgba(255,255,255,.06);
+  color: rgba(231,238,252,1);
+}
+
+.sideBottom{
+  margin-top: auto;
+  padding: 14px 10px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  background: rgba(0,0,0,.10);
+}
+
+/* ---------- Header / KPIs ---------- */
+.topNote{
+  color: rgba(231,238,252,.70);
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+
+.kpiRow{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.kpiCard{
+  padding: 14px 16px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  background: rgba(255,255,255,.03);
+  min-width: 0;
+}
+
+.kpiLabel{
+  color: rgba(231,238,252,.65);
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.kpiValue{
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 900;
+  letter-spacing: .2px;
+  line-height: 1.05;
+}
+
+.kpiSub{
+  margin-top: 6px;
+  color: rgba(231,238,252,.60);
+  font-size: 13px;
+}
+
+.pos{ color: rgba(53,208,127,.95); }
+.neg{ color: rgba(255,107,107,.95); }
+
+/* ---------- Chart ---------- */
+.chartCard{
+  width: 100%;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  background: rgba(255,255,255,.03);
+  padding: 12px 14px 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.chartArea{
+  width: 100%;
+  height: 220px;
+  display: block;
+}
+
+.chartLine{
+  fill: none;
+  stroke: rgba(53,208,127,.95);
+  stroke-width: 3;
+}
+
+.chartGrid{
+  stroke: rgba(255,255,255,.08);
+  stroke-width: 1;
+}
+
+/* ---------- Tabs + Table ---------- */
+.tabs{
+  display: flex;
+  gap: 12px;
+  margin: 14px 0 8px;
+  flex-wrap: wrap;
+}
+
+.tab{
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.03);
+  cursor: pointer;
+  color: rgba(231,238,252,.8);
+  user-select: none;
+}
+
+.tab.active{
+  background: #30496d;
+  border-color: rgb(34 54 83 / 35%);
+  color: rgba(231,238,252,1);
+}
+
+.tableWrap{
+  width: 100%;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  background: rgba(255,255,255,.03);
+  overflow-x: auto;
+  overflow-y: visible;
+  position: relative;
+}
+
+.table2{
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+}
+
+.table2 th,
+.table2 td{
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.table2 th{
+  color: rgba(231,238,252,.60);
+  font-weight: 600;
+}
+
+/* ---------- Misc ---------- */
+.sideSearchNote{
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(231,238,252,.55);
+}
+
+.signedInAs{
+  padding: 10px 12px;
+  color: rgba(231,238,252,.55);
+  font-size: 12px;
+}
+
+.errorText{
+  color: salmon;
+}
+
+.btnRow{
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.chartNote{
+  padding: 6px 2px 2px;
+  color: rgba(231,238,252,.55);
+  font-size: 12px;
+}
+
+.muted{
+  opacity: .7;
+}
+
+.mutedCell{
+  color: rgba(231,238,252,.6);
+}
+
+.footerNote{
+  margin-top: 12px;
+  color: rgba(231,238,252,.55);
+  font-size: 12px;
+}
+
+.heartBtn{
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.03);
+  color: rgba(231,238,252,.75);
+  cursor: pointer;
+  transition: all .15s ease;
+  flex: 0 0 auto;
+}
+
+.heartBtn:hover{
+  background: rgba(255,255,255,.06);
+}
+
+.heartBtn svg{
+  display: block;
+}
+
+.heartBtn.saved{
+  background: rgba(255,107,107,.15);
+  border-color: rgba(255,107,107,.35);
+  color: rgba(255,107,107,.95);
+}
+
+.sideUtility{
+  padding: 8px 10px 14px;
+}
+
+.learnModePill{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.025);
+  color: rgba(231,238,252,.78);
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.learnModePill:hover{
+  background: rgba(255,255,255,.045);
+  color: rgba(231,238,252,.95);
+}
+
+.learnModePill.on{
+  background: rgba(110,168,254,.10);
+  border-color: rgba(110,168,254,.22);
+  color: rgba(231,238,252,1);
+}
+
+.learnModeDot{
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(231,238,252,.35);
+  flex: 0 0 auto;
+}
+
+.learnModePill.on .learnModeDot{
+  background: rgba(53,208,127,.95);
+  box-shadow: 0 0 10px rgba(53,208,127,.35);
+}
+
+.learnModeLabel{
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.learnModeState{
+  margin-left: auto;
+  font-size: 12px;
+  color: rgba(231,238,252,.55);
+}
+
+.learnModePill.on .learnModeState{
+  color: rgba(231,238,252,.82);
+}
+
+/* ---------- Watchlist ---------- */
+.watchlistTable{
+  width: 100%;
+  min-width: 720px;
+  table-layout: fixed;
+}
+
+.watchlistTable th,
+.watchlistTable td{
+  padding: 18px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+}
+
+.watchlistTable th:nth-child(1),
+.watchlistTable td:nth-child(1){
+  width: 14%;
+  text-align: left;
+}
+
+.watchlistTable th:nth-child(2),
+.watchlistTable td:nth-child(2){
+  width: 30%;
+  text-align: left;
+}
+
+.watchlistTable th:nth-child(3),
+.watchlistTable td:nth-child(3){
+  width: 18%;
+  text-align: right;
+}
+
+.watchlistTable th:nth-child(4),
+.watchlistTable td:nth-child(4){
+  width: 19%;
+  text-align: right;
+}
+
+.watchlistTable th:nth-child(5),
+.watchlistTable td:nth-child(5){
+  width: 19%;
+  text-align: right;
+}
+
+.watchlistTable .symbolCell{
+  font-weight: 700;
+}
+
+.watchlistTable .priceCell{
+  white-space: nowrap;
+}
+
+.watchlistTable .emptyRow{
+  text-align: center;
+}
+
+.miniWatchlistTabs{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  margin-bottom: 14px;
+  padding: 0 4px;
+  border-radius: 16px;
+}
+
+.miniWatchlistTab{
+  appearance: none;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.04);
+  color: rgba(231,238,252,.82);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.miniWatchlistTab:hover{
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.2);
+}
+
+.miniWatchlistTab.active{
+  background: rgba(88,133,201,.35);
+  border-color: rgba(88,133,201,.65);
+  color: #eef4ff;
+}
+
+/* ---------- Tablet ---------- */
+@media (max-width: 1100px){
+  .dashShell{
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+
+  .dashShell .sidebar{
+    width: 240px;
+    min-width: 240px;
+  }
+
+  .sidebarTop{
+    min-height: 76px;
+    padding: 0 14px;
+  }
+
+  .sidebarTop .logo{
+    font-size: 16px;
+    line-height: 1.1;
+    word-break: break-word;
+  }
+
+  .sideSearch{
+    padding: 12px 14px;
+  }
+
+  .sideSearch input{
+    padding: 10px 10px;
+    font-size: 13px;
+  }
+
+  .dashShell .dashContent,
+  .dashShell .main{
+    padding: 18px 18px 40px;
+  }
+
+  .kpiRow{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Mobile drawer ---------- */
+@media (max-width: 900px){
+  .dashShell{
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+    height: auto;
+    overflow: visible;
+  }
+
+  .mobileSidebarBtn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+  }
+
+  .sidebarOverlay{
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 98;
+  }
+
+  .dashShell .sidebar{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(280px, 82vw);
+    min-width: 0;
+    height: 100vh;
+    z-index: 99;
+    transform: translateX(-105%);
+    transition: transform .2s ease;
+    overflow-y: auto;
+    border-right: 1px solid rgba(255,255,255,.08);
+    background: linear-gradient(180deg, #172742, #0f172a);
+  }
+
+  .dashShell .sidebar.open{
+    transform: translateX(0);
+  }
+
+  .mobileSidebarClose{
+    display: grid;
+    place-items: center;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(255,255,255,.05);
+    color: rgba(231,238,252,1);
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .dashShell .dashContent,
+  .dashShell .main{
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+    padding: 16px 16px 36px;
+  }
+
+  .sidebarTop .logo{
+    padding-right: 40px;
+  }
+
+  .watchlistTable th,
+  .watchlistTable td{
+    padding: 14px 16px;
+  }
+}
+
+/* ---------- Small phones ---------- */
+@media (max-width: 600px){
+  .dashShell .dashContent,
+  .dashShell .main{
+    padding: 12px 12px 28px;
+  }
+
+  .sidebarTop{
+    min-height: 72px;
+    padding: 0 12px;
+  }
+
+  .tabs,
+  .miniWatchlistTabs,
+  .btnRow{
+    gap: 8px;
+  }
+
+  .tab,
+  .miniWatchlistTab{
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .kpiCard,
+  .chartCard,
+  .tableWrap{
+    border-radius: 12px;
+  }
+
+  .table2 th,
+  .table2 td{
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .watchlistTable{
+    min-width: 640px;
+  }
+
+  .watchlistTable th,
+  .watchlistTable td{
+    padding: 12px 12px;
+  }
+}

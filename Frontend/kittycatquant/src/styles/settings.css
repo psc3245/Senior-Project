@@ -1,0 +1,146 @@
+.settingsPage {
+  padding: 24px 28px 40px;
+  color: rgba(231, 238, 252, 1);
+}
+
+.settingsHeader {
+  margin-bottom: 18px;
+}
+
+.settingsHeader h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.settingsHeader p {
+  margin-top: 8px;
+  color: rgba(231, 238, 252, 0.65);
+  font-size: 15px;
+}
+
+.settingsGrid {
+  display: grid;
+  gap: 18px;
+}
+
+.settingsCard {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 18px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.settingsCard h2 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.settingsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.settingsRow:last-child {
+  border-bottom: none;
+}
+
+.label {
+  color: rgba(231, 238, 252, 0.6);
+  font-size: 14px;
+}
+
+.value {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.muted {
+  color: rgba(231, 238, 252, 0.5);
+  font-size: 12px;
+}
+
+.settingsActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* 🔹 Neutral button (Log out) */
+.secondaryBtn {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
+  color: rgba(231,238,252,.85);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.secondaryBtn:hover {
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.16);
+}
+
+/* 🔴 Danger button (Delete account) */
+.dangerBtn {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,107,107,.25);
+  background: rgba(255,107,107,.10);
+  color: rgba(255,160,160,.9);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dangerBtn:hover {
+  background: rgba(255,107,107,.18);
+  border-color: rgba(255,107,107,.35);
+}
+
+/* 🔵 Learn Mode Toggle */
+.toggleBtn {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.03);
+  color: rgba(231,238,252,.6);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 70px;
+  text-align: center;
+}
+
+/* ON state */
+.toggleBtn.on {
+  background: rgba(53,208,127,.15);
+  border-color: rgba(53,208,127,.35);
+  color: rgba(53,208,127,.95);
+  box-shadow: 0 0 10px rgba(53,208,127,.25);
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+  .settingsPage {
+    padding: 18px 16px 32px;
+  }
+
+  .settingsRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .value {
+    text-align: left;
+  }
+}

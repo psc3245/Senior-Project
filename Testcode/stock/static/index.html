@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Graham Dashboard</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 24px; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 16px; background: #fff; }
+    .card h2 { margin: 0 0 12px 0; font-size: 16px; }
+    textarea, input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+    button { padding: 10px 12px; border-radius: 8px; border: 1px solid #333; background: #111; color: #fff; cursor: pointer; }
+    button.secondary { background: #fff; color: #111; border-color: #aaa; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; font-size: 14px; }
+    th { background: #fafafa; position: sticky; top: 0; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid #ddd; }
+    .badge.consider { border-color: #2e7d32; }
+    .badge.neutral { border-color: #6d6d6d; }
+    .badge.avoid { border-color: #c62828; }
+    .muted { color: #666; font-size: 13px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    pre { white-space: pre-wrap; word-wrap: break-word; background: #fafafa; border: 1px solid #eee; padding: 10px; border-radius: 8px; }
+    .split { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; }
+    @media (max-width: 1100px) { .split { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>Graham Valuation Dashboard</h1>
+  <p class="muted">Screen tickers, save snapshots, then generate deterministic and LLM explanations grounded in snapshot data.</p>
+
+  <div class="split">
+    <div class="card">
+      <h2>Screen (Suggestions)</h2>
+
+      <div class="row">
+        <div style="flex: 2; min-width: 320px;">
+          <label class="muted">Tickers (comma or newline)</label>
+          <textarea id="tickers" rows="4">AAPL, MSFT, GOOGL, AMZN, JNJ, INTC</textarea>
+        </div>
+
+        <div style="flex: 1; min-width: 220px;">
+          <label class="muted">Investor type</label>
+          <select id="investor_type">
+            <option value="enterprising">enterprising</option>
+            <option value="defensive">defensive</option>
+          </select>
+
+          <div style="height: 10px"></div>
+
+          <label class="muted">Expected growth % (g)</label>
+          <input id="growth" type="number" step="0.1" value="5.0" />
+        </div>
+
+        <div style="flex: 1; min-width: 220px;">
+          <label class="muted">Bond yield series (FRED)</label>
+          <input id="yield_series" type="text" value="DGS10" />
+
+          <div style="height: 10px"></div>
+
+          <label class="muted">Min MoS % filter (optional)</label>
+          <input id="min_mos" type="number" step="0.1" placeholder="e.g., 25" />
+        </div>
+
+        <div style="flex: 1; min-width: 220px;">
+          <label class="muted">Require positive EPS</label>
+          <select id="require_eps">
+            <option value="true" selected>true</option>
+            <option value="false">false</option>
+          </select>
+
+          <div style="height: 10px"></div>
+
+          <label class="muted">Limit</label>
+          <input id="limit" type="number" value="20" min="1" max="200" />
+        </div>
+      </div>
+
+      <div style="margin-top: 12px;" class="row">
+        <button id="btnScreen">Run Screen</button>
+        <button id="btnSnapshots" class="secondary">Refresh Snapshots</button>
+        <span id="status" class="muted"></span>
+      </div>
+
+      <div style="max-height: 420px; overflow: auto;">
+        <table id="resultsTable">
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Price</th>
+              <th>IV (Graham)</th>
+              <th>MoS %</th>
+              <th>Rec</th>
+              <th>Snapshot</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Details</h2>
+      <div class="muted">Selected snapshot</div>
+      <div id="selectedId" class="mono" style="margin-top: 6px; margin-bottom: 10px;">(none)</div>
+
+      <div class="row">
+        <button id="btnExplain" disabled>Explain (deterministic)</button>
+        <button id="btnExplainLLM" disabled>Explain (LLM / Ollama)</button>
+      </div>
+
+      <div style="margin-top: 12px;">
+        <div class="muted">Explain output</div>
+        <pre id="explainOut">(none)</pre>
+      </div>
+
+      <div style="margin-top: 12px;">
+        <div class="muted">LLM output</div>
+        <pre id="llmOut">(none)</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 16px;">
+    <h2>Recent Snapshots</h2>
+    <div class="muted">Click one to select</div>
+    <div style="max-height: 280px; overflow: auto;">
+      <table id="snapshotsTable">
+        <thead>
+          <tr>
+            <th>Created (UTC)</th>
+            <th>Ticker</th>
+            <th>Snapshot ID</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+<script>
+  const statusEl = document.getElementById("status");
+  const resultsTbody = document.querySelector("#resultsTable tbody");
+  const snapshotsTbody = document.querySelector("#snapshotsTable tbody");
+  const selectedIdEl = document.getElementById("selectedId");
+  const explainOutEl = document.getElementById("explainOut");
+  const llmOutEl = document.getElementById("llmOut");
+  const btnExplain = document.getElementById("btnExplain");
+  const btnExplainLLM = document.getElementById("btnExplainLLM");
+
+  let selectedSnapshotId = null;
+
+  function setStatus(msg) { statusEl.textContent = msg; }
+
+  function parseTickers(text) {
+    return text
+      .split(/[\n,]+/)
+      .map(s => s.trim().toUpperCase())
+      .filter(Boolean);
+  }
+
+  function fmt(x, digits=2) {
+    if (x === null || x === undefined) return "";
+    if (typeof x === "number") return x.toFixed(digits);
+    return String(x);
+  }
+
+  function badge(rec) {
+    const c = (rec || "").toLowerCase();
+    const cls = c.includes("consider") ? "consider" : c.includes("avoid") ? "avoid" : "neutral";
+    return `<span class="badge ${cls}">${rec}</span>`;
+  }
+
+  function selectSnapshot(id) {
+    selectedSnapshotId = id;
+    selectedIdEl.textContent = id;
+    btnExplain.disabled = !id;
+    btnExplainLLM.disabled = !id;
+    explainOutEl.textContent = "(none)";
+    llmOutEl.textContent = "(none)";
+  }
+
+  const API_BASE = window.location.origin; // e.g. http://127.0.0.1:8000
+
+async function api(path, opts = {}) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    headers: { "Content-Type": "application/json" },
+    ...opts,
+  });
+
+  const text = await res.text();
+  let data = null;
+  try { data = text ? JSON.parse(text) : null; }
+  catch { data = { raw: text }; }
+
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${text}`);
+  return data;
+}
+
+  async function runScreen() {
+    setStatus("Running screen...");
+    resultsTbody.innerHTML = "";
+
+    const tickers = parseTickers(document.getElementById("tickers").value);
+    const investor_type = document.getElementById("investor_type").value;
+    const expected_growth_pct = Number(document.getElementById("growth").value || 5.0);
+    const bond_yield_series_id = document.getElementById("yield_series").value.trim() || "DGS10";
+    const min_mos_raw = document.getElementById("min_mos").value;
+    const min_mos_pct = min_mos_raw === "" ? null : Number(min_mos_raw);
+    const require_positive_eps = document.getElementById("require_eps").value === "true";
+    const limit = Number(document.getElementById("limit").value || 20);
+
+    const payload = {
+      tickers,
+      investor_type,
+      expected_growth_pct,
+      bond_yield_series_id,
+      min_mos_pct,
+      require_positive_eps,
+      limit
+    };
+
+    try {
+      // Requires /v1/graham/screen endpoint
+      const data = await api("/v1/graham/screen", { method: "POST", body: JSON.stringify(payload) });
+      const results = data.results || [];
+
+      for (const r of results) {
+        const mos = r.computed?.margin_of_safety_pct;
+        const iv = r.computed?.intrinsic_value_graham;
+        const price = r.inputs?.price;
+        const rec = r.recommendation || "";
+        const sid = r.snapshot_id || "";
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="mono">${r.ticker}</td>
+          <td>${fmt(price)}</td>
+          <td>${fmt(iv)}</td>
+          <td>${mos === null || mos === undefined ? "" : fmt(mos)}</td>
+          <td>${badge(rec)}</td>
+          <td class="mono">${sid}</td>
+          <td>
+            <button class="secondary" data-sid="${sid}">Select</button>
+          </td>
+        `;
+        tr.querySelector("button").addEventListener("click", () => selectSnapshot(sid));
+        resultsTbody.appendChild(tr);
+      }
+
+      setStatus(`Done. Yield used: ${data.bond_yield_used ?? ""}. Results: ${results.length}`);
+      await refreshSnapshots();
+    } catch (e) {
+      setStatus(`Error: ${e.message}`);
+    }
+  }
+
+  async function refreshSnapshots() {
+    setStatus("Loading snapshots...");
+    snapshotsTbody.innerHTML = "";
+    try {
+      const items = await api("/v1/snapshots?limit=20");
+      for (const s of items) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${s.created_at_utc || ""}</td>
+          <td class="mono">${s.ticker || ""}</td>
+          <td class="mono">${s.snapshot_id || ""}</td>
+        `;
+        tr.style.cursor = "pointer";
+        tr.addEventListener("click", () => selectSnapshot(s.snapshot_id));
+        snapshotsTbody.appendChild(tr);
+      }
+      setStatus(`Snapshots loaded: ${items.length}`);
+    } catch (e) {
+      setStatus(`Error: ${e.message}`);
+    }
+  }
+
+  async function explainDeterministic() {
+    if (!selectedSnapshotId) return;
+    setStatus("Explaining (deterministic)...");
+    try {
+      const investor_type = document.getElementById("investor_type").value;
+      const data = await api("/v1/explain", {
+        method: "POST",
+        body: JSON.stringify({ snapshot_id: selectedSnapshotId, investor_type })
+      });
+      explainOutEl.textContent = JSON.stringify(data, null, 2);
+      setStatus("Explain done.");
+    } catch (e) {
+      setStatus(`Error: ${e.message}`);
+    }
+  }
+
+  async function explainLLM() {
+    if (!selectedSnapshotId) return;
+    setStatus("Explaining (LLM / Ollama)...");
+    try {
+      const investor_type = document.getElementById("investor_type").value;
+      const data = await api("/v1/explain_llm", {
+        method: "POST",
+        body: JSON.stringify({ snapshot_id: selectedSnapshotId, investor_type })
+      });
+      llmOutEl.textContent = JSON.stringify(data, null, 2);
+      setStatus("LLM explain done.");
+    } catch (e) {
+      setStatus(`Error: ${e.message}`);
+    }
+  }
+
+  document.getElementById("btnScreen").addEventListener("click", runScreen);
+  document.getElementById("btnSnapshots").addEventListener("click", refreshSnapshots);
+  btnExplain.addEventListener("click", explainDeterministic);
+  btnExplainLLM.addEventListener("click", explainLLM);
+
+  // initial load
+  refreshSnapshots();
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+@StockTraderBackend_HostAddress = http://localhost:5206
+
+GET {{StockTraderBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
